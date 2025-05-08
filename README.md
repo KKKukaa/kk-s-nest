@@ -52,7 +52,8 @@ cd kuk-portal
 # 安装依赖
 pip install -r requirements.txt
 ```
-或直接使用双击运行app.exe
+或者直接双击运行app.exe
+亦或使用再来.bat快捷打包
 
 # 🔍 如何启用DeepSeek AI功能
 
@@ -73,3 +74,4 @@ pip install -r requirements.txt
 ```bash
 python app.py
 ```
+或使用 再来.bat 快捷打包
