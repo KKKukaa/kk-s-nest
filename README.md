@@ -52,23 +52,24 @@ cd kuk-portal
 # 安装依赖
 pip install -r requirements.txt
 ```
+或直接使用双击运行app.exe
 
+# 🔍 如何启用DeepSeek AI功能
 
-# 如何启用deepseek AI功能
-
-### 1. 注册DeepSeek账号
+## 1. 注册
 
 前往[DeepSeek官网](https://deepseek.com/)注册账号，获取API Key和Secret Key。
 
-### 2. 修改配置文件
+## 2. 修改配置文件
 
 在 app.py 中修改 DEEPSEEK_API_KEY 为你的API Key
 
-### 3. 启动项目
+## 3. 更换HTML文件
+
+在 templates 文件夹中找到 2.html ，移动至 html 文件夹中，并修改名称为 index.html ，替换原文件
+
+## 4. 启动项目
 
 ```bash
 python app.py
 ```
-### 4. 更换HTML文件
-
-在 templates 文件夹中找到 2.html ，移动至 html 文件夹中，并修改名称为 index.html ，替换原文件
