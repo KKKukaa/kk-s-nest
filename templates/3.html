@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KUK的小窝</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --secondary: #10B981;
+            --background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--background);
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            color: #1f2937;
+            display: inline-block;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        button:hover {
+            background: #4338CA;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        #answer {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .notification {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: var(--secondary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .title {
+                font-size: 1.8rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1 class="title">摩西摩西，这里是KUK的小窝</h1>
+        </div>
+
+        <!-- 消息卡片 -->
+        <div class="card">
+            <h2 style="margin-bottom: 1.5rem; color: var(--primary);">📮 留下你的讯息</h2>
+            <form onsubmit="return false;">
+                <div class="form-group">
+                    <input type="text" name="username" placeholder="你的名字" required>
+                </div>
+                <div class="form-group">
+                    <textarea name="message" placeholder="输入你想说的话..." required></textarea>
+                </div>
+                <button onclick="saveMessage()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 19V6m-7 7 7-7 7 7"/>
+                    </svg>
+                    发送消息
+                </button>
+            </form>
+        </div>
+
+        <!-- AI咨询卡片 -->
+        <div class="card">
+            <h2 style="margin-bottom: 1.5rem; color: var(--primary);">🤖 DeepSeek 咨询</h2>
+            <form onsubmit="return false;">
+                <div class="form-group">
+                    <textarea id="question" placeholder="输入你的问题..." required></textarea>
+                </div>
+                <button onclick="askDeepSeek()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
+                    </svg>
+                    立即提问
+                </button>
+            </form>
+            <div id="answer"></div>
+        </div>
+
+        <!-- 通知 -->
+        <div class="notification" id="notification"></div>
+    </div>
+
+    <script>
+        // 保存消息功能
+        async function saveMessage() {
+            const formData = new FormData(document.forms[0])
+            const response = await fetch('/', {
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            })
+            
+            // 显示精美通知
+            const notification = document.getElementById('notification')
+            notification.textContent = '✨ 消息已安全送达！'
+            notification.style.display = 'block'
+            setTimeout(() => {
+                notification.style.display = 'none'
+            }, 2000)
+            
+            // 清空表单
+            document.forms[0].reset()
+        }
+
+        // DeepSeek咨询功能
+        async function askDeepSeek() {
+            const question = document.getElementById('question').value
+            const button = document.querySelector('#AI-card button')
+            
+            // 添加加载状态
+            button.innerHTML = `
+                <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                </svg>
+                思考中...
+            `
+            button.disabled = true
+            
+            try {
+                const response = await fetch('/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({ question })
+                })
+                const data = await response.json()
+                
+                document.getElementById('answer').innerHTML = `
+                    <div style="margin-top: 1rem; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
+                        <div style="color: var(--primary); font-weight: 500; margin-bottom: 0.5rem;">📝 回答：</div>
+                        <div style="color: #374151; line-height: 1.6;">${data.answer.replace(/\n/g, '<br>')}</div>
+                    </div>
+                `
+            } catch (error) {
+                document.getElementById('answer').innerHTML = `
+                    <div style="color: #ef4444; margin-top: 1rem;">⚠️ 请求失败，请稍后再试</div>
+                `
+            } finally {
+                // 恢复按钮状态
+                button.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
+                    </svg>
+                    立即提问
+                `
+                button.disabled = false
+            }
+        }
+
+        // 输入框自动高度调整
+        document.querySelectorAll('textarea').forEach(textarea => {
+            textarea.addEventListener('input', () => {
+                textarea.style.height = 'auto'
+                textarea.style.height = textarea.scrollHeight + 'px'
+            })
+        })
+    </script>
+</body>
+</html>

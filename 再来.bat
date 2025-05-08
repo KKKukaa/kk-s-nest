@@ -1,0 +1,1 @@
+pyinstaller --onefile --add-data "templates;templates"  --hidden-import=email.mime.application app.py

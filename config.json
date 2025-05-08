@@ -1,0 +1,20 @@
+{
+  "downloads": [
+    {
+      "name": "本程序的早期版本",
+      "path": "files/app.exe"
+    },
+    {
+      "name": "更现代的版本",
+      "path": "files/2.0.exe"
+    },
+    {
+      "name": "最新版本",
+      "path": "files/3.0.exe"
+    },
+    {
+      "name": "好看的",
+      "path": "files/mp.mp4"
+    }
+  ]
+}
