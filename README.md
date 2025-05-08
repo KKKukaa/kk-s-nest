@@ -6,6 +6,8 @@
 
 **一个简单的Web应用，可以当做资源站用？**
 
+## ‼️ 注意，本程序为新手的初次尝试，如有不足请见谅
+
 ## 🌟 功能亮点
 
 - **消息存储系统**
@@ -60,7 +62,7 @@ pip install -r requirements.txt
 
 ### 2. 修改配置文件
 
-在`app.py`中修改`DEEPSEEK_API_KEY`为你的API Key
+在 app.py 中修改 DEEPSEEK_API_KEY 为你的API Key
 
 ### 3. 启动项目
 
@@ -69,4 +71,4 @@ python app.py
 ```
 ### 4. 更换HTML文件
 
-在`templates`文件夹中找到`2.html`，修改名称为`index.html`，并移动至`html`文件夹中，替换原文件
+在 templates 文件夹中找到 2.html ，移动至 html 文件夹中，并修改名称为 index.html ，替换原文件
