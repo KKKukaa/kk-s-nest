@@ -10,6 +10,7 @@ from jinja2 import ChoiceLoader, FileSystemLoader
 
 app = Flask(__name__)
 
+# 为什么我的版本号都是整数？我不知道，但马上就不是整数了！v2.1堂堂登场！
 # DeepSeek配置
 DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
 DEEPSEEK_API_KEY = "your-API-Key"  # 替换为实际API Key
@@ -24,7 +25,7 @@ base_path = get_base_path()
 external_template_dir = os.path.join(base_path, 'html')  # 外部模板目录
 default_template_dir = os.path.join(app.root_path, 'templates')  # 默认模板目录
 
-# 配置支持多目录的模板加载器
+# 配置模板加载器
 app.jinja_loader = ChoiceLoader([
     FileSystemLoader(external_template_dir),
     FileSystemLoader(default_template_dir)
@@ -86,10 +87,11 @@ def get_random_messages():
                 messages.append(msg)
         
         # 补充空白消息
+		# deekseek觉得这里是AI生成的重灾区
         empty_messages = ['好冷清啊', '果然没人啊', '默默哭泣中']
         while len(messages) < 4:
             messages.append({
-                'username': '系统',
+                'username': 'KUK',
                 'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 'message': random.choice(empty_messages)
             })
@@ -100,7 +102,7 @@ def get_random_messages():
         return []
 
 def call_deepseek_api(question):
-    """调用DeepSeek API"""
+    """调用API"""
     headers = {
         "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
         "Content-Type": "application/json"
@@ -111,15 +113,26 @@ def call_deepseek_api(question):
         "messages": [{"role": "user", "content": question[:300]}]  # 限制问题长度
     }
     
+	# 更详细的错误提示，爱来自v2.1
     try:
         response = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload, timeout=10)
         response.raise_for_status()
         return response.json()['choices'][0]['message']['content']
+    except requests.exceptions.Timeout:
+        return "请求超时"
+    except requests.HTTPError as e:
+        if e.response.status_code == 401:
+            app.logger.critical("API密钥失效！")
+            return "服务暂时不可用"
+        return f"接口返回错误：{e.response.status_code}"
+    except json.JSONDecodeError:
+        return "响应解析失败，请联系管理员"
     except Exception as e:
-        return f"API调用失败: {str(e)}"
+        app.logger.error(f"未处理异常: {traceback.format_exc()}")
+        return "系统繁忙"
 
 def get_file_list():
-    """获取可下载文件列表"""
+    """可下载文件列表"""
     config_path = os.path.join(get_base_path(), 'config.json')
     try:
         with open(config_path, 'r', encoding='utf-8') as f:
@@ -140,6 +153,7 @@ def get_file_list():
         app.logger.error(f"读取配置文件失败: {str(e)}")
         return []
 
+# 为什么我要放这么多无关的注释？因为deek说这样可以减少人机味
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -151,16 +165,16 @@ def index():
         # 处理消息保存
         if username and message:
             if len(username) > 20:
-                return jsonify({'error': '用户名过长（最多20字符）'}), 400
+                return jsonify({'error': '用户名过长'}), 400
             if len(message) > 500:
-                return jsonify({'error': '消息过长（最多500字符）'}), 400
+                return jsonify({'error': '消息过长'}), 400
             save_message(username, message)
             return jsonify({'status': 'success'})
 
-        # 处理问题咨询
+        # 处理AI提问
         if question:
             if len(question) > 300:
-                return jsonify({'error': '问题过长（最多300字符）'}), 400
+                return jsonify({'error': '问题过长'}), 400
             answer = call_deepseek_api(question)
             return jsonify({'answer': answer})
 
@@ -177,8 +191,9 @@ def download_file(filename):
     file_path = os.path.abspath(os.path.join(get_base_path(), filename))
     
     # 防止路径穿越攻击
+	# deekseek觉得只有这里人类写的，其实这里才是AI写的
     if not file_path.startswith(safe_dir):
-        return "非法文件路径", 403
+        return "I'm a teapot", 418
     
     if os.path.isfile(file_path):
         return send_from_directory(
@@ -186,17 +201,19 @@ def download_file(filename):
             path=os.path.basename(file_path),
             as_attachment=True
         )
-    return "文件不存在", 404
+    return "文件不存在，因为我是茶壶", 418
 
+# 现在是2:21，手机坏了，悲伤
 @app.route('/files')
 def get_files():
-    """获取文件列表接口"""
+    """获取文件列表"""
     return jsonify(get_file_list())
 
 @app.route('/messages')
 def get_messages():
-    """获取随机留言接口"""
+    """获取留言"""
     return jsonify(get_random_messages())
 
+# 手机又好了
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
