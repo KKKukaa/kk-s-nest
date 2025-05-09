@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KUK的小窝</title>
     <style>
+        /* 原有样式保持不变 */
         :root {
             --primary: #4F46E5;
             --secondary: #10B981;
@@ -16,6 +17,57 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* 新增留言墙样式 */
+        .message-wall {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .message-item {
+            background: #f8fafc;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border-left: 4px solid var(--primary);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .message-system {
+            border-left-color: #6b7280;
+            background: #f3f4f6;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .message-user {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .message-system .message-user {
+            color: #6b7280;
+        }
+
+        .message-time {
+            color: #6b7280;
+        }
+
+        .message-content {
+            color: #374151;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         body {
@@ -206,6 +258,7 @@
                 padding: 1.5rem;
             }
         }
+		
     </style>
 </head>
 <body>
@@ -233,6 +286,14 @@
             </form>
         </div>
 
+        <!-- 新增留言墙卡片 -->
+        <div class="card">
+            <h2 style="margin-bottom: 1.5rem; color: var(--primary);">💌 留言墙</h2>
+            <div id="message-wall" class="message-wall">
+                <div class="loading">正在加载留言...</div>
+            </div>
+        </div>
+
         <!-- 文件下载卡片 -->
         <div class="card">
             <h2 style="margin-bottom: 1.5rem; color: var(--primary);">📦 资源下载</h2>
@@ -246,6 +307,38 @@
     </div>
 
     <script>
+        // 新增留言墙加载函数
+        async function loadMessages() {
+            const messageWall = document.getElementById('message-wall');
+            try {
+                const response = await fetch('/messages');
+                if (!response.ok) throw new Error('加载失败');
+                const messages = await response.json();
+
+                messageWall.innerHTML = messages.map(msg => `
+                    <div class="message-item ${msg.username === '系统' ? 'message-system' : ''}">
+                        <div class="message-header">
+                            <span class="message-user">${msg.username}</span>
+                            <span class="message-time">${msg.time}</span>
+                        </div>
+                        <div class="message-content">${msg.message}</div>
+                    </div>
+                `).join('');
+
+                // 添加空白提示动画
+                document.querySelectorAll('.message-item').forEach((item, index) => {
+                    item.style.animationDelay = `${index * 0.1}s`;
+                });
+
+            } catch (error) {
+                messageWall.innerHTML = `
+                    <div class="message-item message-system">
+                        <div class="message-content">🥺 留言加载失败，刷新试试看</div>
+                    </div>
+                `;
+            }
+        }
+		
         // 通用通知函数
         function showNotification(text, color = '#10B981') {
             const notification = document.getElementById('notification');
@@ -347,14 +440,18 @@
             });
         }
 
-        // 页面加载初始化
+        // 修改页面加载初始化
         window.addEventListener('load', () => {
             loadFiles();
+            loadMessages();  // 新增留言加载
             autoResizeTextarea();
             document.querySelectorAll('textarea').forEach(ta => {
                 ta.addEventListener('input', autoResizeTextarea);
             });
         });
+
+        /* 其他原有JavaScript保持不变 */
+        // ...
     </script>
 </body>
 </html>

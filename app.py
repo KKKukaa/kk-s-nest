@@ -3,6 +3,7 @@ import sys
 import re
 import json
 import requests
+import random
 from datetime import datetime
 from flask import Flask, request, render_template, jsonify, send_from_directory
 from jinja2 import ChoiceLoader, FileSystemLoader
@@ -51,6 +52,52 @@ def save_message(username, message):
             f.write(f"Message:\n{message[:500]}\n")  # 限制消息长度
     except Exception as e:
         app.logger.error(f"保存失败: {str(e)}")
+
+def parse_message_file(filepath):
+    """解析单个留言文件"""
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+            
+        username = re.search(r'Username: (.+)', content).group(1)
+        time = re.search(r'Time: (.+)', content).group(1)
+        message = re.search(r'Message:\n(.+)', content, re.DOTALL).group(1).strip()
+        
+        return {
+            'username': username,
+            'time': time,
+            'message': message
+        }
+    except Exception as e:
+        app.logger.error(f"解析文件 {filepath} 失败: {str(e)}")
+        return None
+
+def get_random_messages():
+    """获取随机留言"""
+    try:
+        all_files = [f for f in os.listdir(mail_dir) if f.endswith('.txt')]
+        random.shuffle(all_files)
+        selected_files = all_files[:4]
+        
+        messages = []
+        for filename in selected_files:
+            filepath = os.path.join(mail_dir, filename)
+            if msg := parse_message_file(filepath):
+                messages.append(msg)
+        
+        # 补充空白消息
+        empty_messages = ['好冷清啊', '果然没人啊', '默默哭泣中']
+        while len(messages) < 4:
+            messages.append({
+                'username': '系统',
+                'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'message': random.choice(empty_messages)
+            })
+            
+        return messages
+    except Exception as e:
+        app.logger.error(f"获取留言失败: {str(e)}")
+        return []
 
 def call_deepseek_api(question):
     """调用DeepSeek API"""
@@ -119,7 +166,9 @@ def index():
 
         return jsonify({'error': '无效请求'}), 400
 
-    return render_template('index.html')
+    # GET请求时传递留言数据
+    messages = get_random_messages()
+    return render_template('index.html', messages=messages)
 
 @app.route('/download/<path:filename>')
 def download_file(filename):
@@ -143,6 +192,11 @@ def download_file(filename):
 def get_files():
     """获取文件列表接口"""
     return jsonify(get_file_list())
+
+@app.route('/messages')
+def get_messages():
+    """获取随机留言接口"""
+    return jsonify(get_random_messages())
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
