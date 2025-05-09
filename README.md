@@ -2,7 +2,7 @@
 
 ![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)
 ![Flask Version](https://img.shields.io/badge/flask-2.0%2B-lightgrey)
-![License](https://img.shields.io/badge/license-MIT-green)
+![License](https://img.shields.io/badge/license-WTFPL-green)
 
 **一个简单的Web应用，可以当做资源站用？**
 
@@ -84,7 +84,7 @@ python app.py
 - 程序会优先检查html文件夹中的index.html文件，如果存在则直接显示，否则会显示默认的网页(templates/index.html)
 - 修改html文件夹中的index.html文件后，需要重启程序才能生效
 - config.json 文件实际上是记录可以被下载的文件，如果你想要分享新文件，必须修改这个文件，然后重启程序
-- 理论上，你可以把待分享的文件放在任何地方，只要在config.json中添加文件名即可。但是我建议放在 files 文件夹中，这样方便管理
+- 理论上，你可以把待分享的文件放在任何地方，只要在config.json中添加文件即可。但是我建议放在 files 文件夹中，这样方便管理
 - 以及，本库中的所有网页都是deepseek写的
 - wrap.bat 可以把程序快捷打包成exe文件，但是其实直接 python app.py 也是一样的
 - run.bat 人如其名，就是直接运行
