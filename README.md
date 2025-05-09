@@ -6,7 +6,7 @@
 
 **一个简单的Web应用，可以当做资源站用？**
 
-## ‼️ 注意，本程序为新手的初次尝试，如有不足请见谅
+## ❗ 注意，本程序为新手的初次尝试，如有不足请见谅
 
 ## 🌟 功能亮点
 
@@ -14,7 +14,7 @@
   - 用户认证留言功能
   - 自动过滤危险字符
   - 留言存档按时间/用户名分类
-- **DeepSeek AI集成**
+- **DeepSeek AI**
   - 此功能已隐藏
 - **安全文件共享**
   - 动态加载下载列表
@@ -52,26 +52,40 @@ cd kuk-portal
 # 安装依赖
 pip install -r requirements.txt
 ```
-或者直接双击运行app.exe
-亦或使用再来.bat快捷打包
+或者在 wrap.bat 和 run.bat 中二选一，直接运行也是一样的
 
 # 🔍 如何启用DeepSeek AI功能
 
 ## 1. 注册
 
-前往[DeepSeek官网](https://deepseek.com/)注册账号，获取API Key和Secret Key。
+前往[DeepSeek官网](https://deepseek.com/)注册账号，获取API Key。
 
-## 2. 修改配置文件
+## 2. 修改文件
 
 在 app.py 中修改 DEEPSEEK_API_KEY 为你的API Key
 
-## 3. 更换HTML文件
+## 3. 修改HTML文件
 
-在 templates 文件夹中找到 2.html ，移动至 html 文件夹中，并修改名称为 index.html ，替换原文件
+找到在 html 文件夹中的 index.html ，修改名称或者删除
 
 ## 4. 启动项目
 
 ```bash
 python app.py
 ```
-或使用 再来.bat 快捷打包
+或使用 wrap.bat 快捷打包
+
+## 5. 访问
+
+启动程序后，访问 http://127.0.0.1:5000/ 即可查看网页
+
+# ‼️ 额外说明
+
+- 程序会优先检查html文件夹中的index.html文件，如果存在则直接显示，否则会显示默认的网页(templates/index.html)
+- 修改html文件夹中的index.html文件后，需要重启程序才能生效
+- config.json 文件实际上是记录可以被下载的文件，如果你想要分享新文件，必须修改这个文件，然后重启程序
+- 理论上，你可以把待分享的文件放在任何地方，只要在config.json中添加文件名即可。但是我建议放在 files 文件夹中，这样方便管理
+- 以及，本库中的所有网页都是deepseek写的
+- wrap.bat 可以把程序快捷打包成exe文件，但是其实直接 python app.py 也是一样的
+- run.bat 人如其名，就是直接运行
+- 这些规则纯粹是我不知道写在哪，所以就先这样了

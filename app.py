@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 # DeepSeek配置
 DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
-DEEPSEEK_API_KEY = "your-API"  # 替换为实际API Key
+DEEPSEEK_API_KEY = "your-API-Key"  # 替换为实际API Key
 
 def get_base_path():
     """获取运行路径"""
