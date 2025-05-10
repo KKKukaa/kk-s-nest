@@ -4,22 +4,40 @@ import re
 import json
 import requests
 import random
+import traceback
 from datetime import datetime
 from flask import Flask, request, render_template, jsonify, send_from_directory
 from jinja2 import ChoiceLoader, FileSystemLoader
 
 app = Flask(__name__)
 
-# 为什么我的版本号都是整数？我不知道，但马上就不是整数了！v2.1堂堂登场！
-# DeepSeek配置
-DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
-DEEPSEEK_API_KEY = "your-API-Key"  # 替换为实际API Key
-
-def get_base_path():
+# v2.2堂堂登场！
+# 加入了更多配置文件，自定义更方便了
+# 增加了对茶壶和咖啡的支持，204行旁边，不喜欢可以改掉
+def get_base_path():  # 笑点解析：疯狂报错，找了一圈才发现引用在前定义在后。已修复
     """获取运行路径"""
     if getattr(sys, 'frozen', False):
         return os.path.dirname(sys.executable)
     return os.path.dirname(os.path.abspath(__file__))
+
+def load_config():
+    config_path = os.path.join(get_base_path(), 'config.json')
+    default_config = {
+        "deepseek_api_key": "your-API-Key",
+        "empty_messages": ["好冷清啊", "果然没人啊", "默默哭泣中"],
+        "downloads": []
+    }
+    try:
+        with open(config_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except:
+        return default_config
+
+config = load_config()
+
+# 额外的API Key
+DEEPSEEK_API_KEY = config.get("deepseek_api_key", "your-API-Key")  # 如果配置不存在就回退
+DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
 
 base_path = get_base_path()
 external_template_dir = os.path.join(base_path, 'html')  # 外部模板目录
@@ -86,9 +104,8 @@ def get_random_messages():
             if msg := parse_message_file(filepath):
                 messages.append(msg)
         
-        # 补充空白消息
-		# deekseek觉得这里是AI生成的重灾区
-        empty_messages = ['好冷清啊', '果然没人啊', '默默哭泣中']
+        # 从配置文件读取，如果没有就回退默认值
+        empty_messages = config.get("empty_messages", ["暂无消息", "彩蛋"])
         while len(messages) < 4:
             messages.append({
                 'username': 'KUK',
@@ -109,11 +126,10 @@ def call_deepseek_api(question):
     }
     
     payload = {
-        "model": "deepseek-reasoner",
+        "model": "deepseek-reasoner",  # 也可以用deepseek-chat也就是V3
         "messages": [{"role": "user", "content": question[:300]}]  # 限制问题长度
     }
     
-	# 更详细的错误提示，爱来自v2.1
     try:
         response = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload, timeout=10)
         response.raise_for_status()
@@ -122,14 +138,14 @@ def call_deepseek_api(question):
         return "请求超时"
     except requests.HTTPError as e:
         if e.response.status_code == 401:
-            app.logger.critical("API密钥失效！")
-            return "服务暂时不可用"
+            app.logger.critical("API密钥失效，请联系管理员")
+            return "服务不可用"
         return f"接口返回错误：{e.response.status_code}"
     except json.JSONDecodeError:
         return "响应解析失败，请联系管理员"
     except Exception as e:
         app.logger.error(f"未处理异常: {traceback.format_exc()}")
-        return "系统繁忙"
+        return "系统繁忙"  # 我不知道这些提示的意义是什么，我觉得大部分人不会把deepseek功能打开
 
 def get_file_list():
     """可下载文件列表"""
@@ -153,7 +169,7 @@ def get_file_list():
         app.logger.error(f"读取配置文件失败: {str(e)}")
         return []
 
-# 为什么我要放这么多无关的注释？因为deek说这样可以减少人机味
+# 无聊
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -191,9 +207,9 @@ def download_file(filename):
     file_path = os.path.abspath(os.path.join(get_base_path(), filename))
     
     # 防止路径穿越攻击
-	# deekseek觉得只有这里人类写的，其实这里才是AI写的
+	# dickseek觉得只有这里人类写的
     if not file_path.startswith(safe_dir):
-        return "I'm a teapot", 418
+        return "I'm a teapot", 418  # 这里是对茶壶的支持
     
     if os.path.isfile(file_path):
         return send_from_directory(
@@ -201,9 +217,8 @@ def download_file(filename):
             path=os.path.basename(file_path),
             as_attachment=True
         )
-    return "文件不存在，因为我是茶壶", 418
+    return "没有这种咖啡！可接受的咖啡：冰美式", 406  # 对咖啡壶的支持
 
-# 现在是2:21，手机坏了，悲伤
 @app.route('/files')
 def get_files():
     """获取文件列表"""
@@ -214,6 +229,5 @@ def get_messages():
     """获取留言"""
     return jsonify(get_random_messages())
 
-# 手机又好了
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=5000, debug=False)  # 这个debug感觉迄今为止没有用到过                                                                                                                                                      我是彩蛋：问了一圈，没有AI觉得这是人写的！我真的很人机吗
