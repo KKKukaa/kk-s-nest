@@ -14,7 +14,7 @@ app = Flask(__name__)
 # v2.2堂堂登场！
 # 加入了更多配置文件，自定义更方便了
 # 增加了对茶壶和咖啡的支持，204行旁边，不喜欢可以改掉
-def get_base_path():  # 笑点解析：疯狂报错，找了一圈才发现引用在前定义在后。已修复
+def get_base_path():  # 笑点解析：运行就报错，找了一圈才发现引用在前定义在后。已修复
     """获取运行路径"""
     if getattr(sys, 'frozen', False):
         return os.path.dirname(sys.executable)
@@ -36,7 +36,7 @@ def load_config():
 config = load_config()
 
 # 额外的API Key
-DEEPSEEK_API_KEY = config.get("deepseek_api_key", "your-API-Key")  # 如果配置不存在就回退
+DEEPSEEK_API_KEY = config.get("deepseek_api_key", "your-API-Key")  # 如果配置不存在就用这个默认值
 DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
 
 base_path = get_base_path()

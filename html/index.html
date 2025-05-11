@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KUK的小窝</title>
     <style>
-        /* 原有样式保持不变 */
         :root {
             --primary: #4F46E5;
             --secondary: #10B981;
@@ -244,8 +243,19 @@
         .animate-spin {
             animation: spin 1s linear infinite;
         }
+		
+		.music-player {
+			display: flex;
+			justify-content: center;
+			margin: 2rem 0;
+		}
 
-        @media (max-width: 640px) {
+		.music-player iframe {
+			border-radius: 10px;
+			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+		}
+
+		@media (max-width: 640px) {
             body {
                 padding: 1rem;
             }
@@ -258,7 +268,6 @@
                 padding: 1.5rem;
             }
         }
-		
     </style>
 </head>
 <body>
@@ -301,9 +310,21 @@
                 <div class="loading">加载中...</div>
             </div>
         </div>
-
+		
         <!-- 通知 -->
         <div class="notification" id="notification"></div>
+    </div>
+	
+    <div class="music-player">
+        <iframe 
+            frameborder="no" 
+            border="0" 
+            marginwidth="0" 
+            marginheight="0" 
+            width="330" 
+            height="86" 
+            src="https://music.163.com/outchain/player?type=2&id=448144155&auto=1&height=66">
+        </iframe>
     </div>
 
     <script>
@@ -450,8 +471,6 @@
             });
         });
 
-        /* 其他原有JavaScript保持不变 */
-        // ...
     </script>
 </body>
 </html>
