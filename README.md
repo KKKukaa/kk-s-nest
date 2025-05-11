@@ -65,7 +65,7 @@ pip install -r requirements.txt
 
 ## 2. 修改文件
 
-在 app.py 中修改 DEEPSEEK_API_KEY 为你的API Key
+在 config.json 中修改 DEEPSEEK_API_KEY 为你的API Key
 
 ## 3. 修改HTML文件
 
