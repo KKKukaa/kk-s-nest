@@ -55,7 +55,7 @@ cd kk-s-nest
 # 安装依赖
 pip install -r requirements.txt
 ```
-或者在 wrap.bat 和 run.bat 中二选一，效果也是一样的
+或者在 package.bat 和 run.bat 中二选一，效果也是一样的
 
 # 🔍 如何启用DeepSeek AI功能
 
@@ -76,7 +76,7 @@ pip install -r requirements.txt
 ```bash
 python app.py
 ```
-或使用 wrap.bat 或 run.bat
+或使用 package.bat 或 run.bat
 
 ## 5. 访问
 
@@ -91,6 +91,6 @@ python app.py
 - 以及，本库中的所有网页都是deepseek写的
 - 留言墙默认只读取4条留言，如果想修改有点麻烦，还是在app.py里
 - 由于我比较懒，其实很多功能本来应该搞成可以用配置文件的，但是懒得写了
-- wrap.bat 可以把程序快捷打包成exe文件，但是其实直接 python app.py 也是一样的
+- package.bat 可以快捷安装依赖并把程序打包成exe文件
 - run.bat 人如其名，就是直接运行
 - 这些规则纯粹是我不知道写在哪，所以就先这样了
