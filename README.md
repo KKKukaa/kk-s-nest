@@ -1,96 +1,100 @@
+以下是整合后的README.md，结构更清晰且内容更简洁：
+
+---
 # KUK的小窝 - 多功能Web门户
 
-![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)
-![Flask Version](https://img.shields.io/badge/flask-2.0%2B-lightgrey)
+![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)  
+![Flask Version](https://img.shields.io/badge/flask-2.0%2B-lightgrey)  
 ![License](https://img.shields.io/badge/license-WTFPL-green)
 
-**一个简单的Web应用，可以当做资源站用？**
+**一个轻量级Web应用，集成资源分享、消息存储与AI功能**  
+❗ *注意：本项目为新手实践作品，功能与代码仍在优化中，欢迎指正。*
 
-## ❗ 注意，本程序为新手的初次尝试，如有不足请见谅
+---
 
-## 🌟 功能
+## 🌟 核心功能
 
-- **消息存储系统**
-  - 用户认证留言功能
-  - 自动过滤危险字符
-  - 留言存档按时间/用户名分类
-- **DeepSeek AI**
-  - 此功能默认关闭
-- **安全文件共享**
-  - 动态加载下载列表
-  - 防路径穿越攻击
-  - 文件大小显示
-- **留言墙**
-  - 自动读取留言
-  - 留言展示
-- **便捷部署**
-  - 一键EXE打包
-- **配置文件**
-  - 新增对配置文件的支持
-  
-## 🛠️ 技术栈
+### **消息存储系统**
+- 用户认证留言功能（需登录）
+- 自动过滤危险字符（XSS/SQLi防护）
+- 留言存档支持按时间、用户名分类检索
 
-| 组件          | 技术实现                  |
-|---------------|--------------------------|
-| 后端框架      | Python Flask             |
-| 前端设计      | HTML5/CSS3 + 现代动画    |
-| API集成       | DeepSeek官方接口         |
-| 安全方案      | 输入过滤 + 路径验证      |
-| 部署方案      | PyInstaller + 内网穿透   |
+### **安全文件共享**
+- 动态加载下载列表（仅限`files/`目录）
+- 防路径穿越攻击，实时校验文件合法性
+- 文件大小自动计算与展示  
+  *📌 新增文件需在`config.json`中注册并重启服务*
 
-## 🚀 快速开始
+### **DeepSeek AI集成**（默认关闭）
+- 通过官方API实现对话功能  
+  *📌 需在[DeepSeek官网](https://deepseek.com/)注册并配置API Key*
+
+### **留言墙**
+- 自动读取最新4条留言（数量需修改`app.py`调整）
+- 实时展示用户留言  
+  *📌 修改HTML文件后需重启服务生效*
+
+### **便捷部署**
+- 一键EXE打包（通过`package.bat`）
+- 支持内网穿透快速部署
+- 提供`run.bat`直接启动服务
+
+---
+
+## 🛠️ 技术实现
+
+| 模块          | 方案                          |
+|---------------|------------------------------|
+| 后端框架      | Flask 2.0+                   |
+| 前端设计      | HTML5/CSS3 + 动态交互        |
+| 安全机制      | 输入过滤 + 路径白名单校验    |
+| API集成       | DeepSeek官方接口             |
+| 部署方案      | PyInstaller + 内网穿透       |
+
+---
+
+## 🚀 快速部署
 
 ### 环境要求
 - Python 3.8+
 - pip 20.0+
 
-### 安装步骤
+### 启动步骤
 ```bash
-# 克隆仓库
 git clone https://github.com/KKKukaa/kk-s-nest.git
-
-# 进入项目目录
 cd kk-s-nest
-
-# 安装依赖
 pip install -r requirements.txt
-```
-或者在 package.bat 和 run.bat 中二选一，效果也是一样的
 
-# 🔍 如何启用DeepSeek AI功能
-
-## 1. 注册
-
-前往[DeepSeek官网](https://deepseek.com/)注册账号，获取API Key。
-
-## 2. 修改文件
-
-在 config.json 中修改 DEEPSEEK_API_KEY 为你的API Key
-
-## 3. 修改HTML文件
-
-找到在 html 文件夹中的 index.html ，修改名称或者删除
-
-## 4. 启动项目
-
-```bash
+# 方式1: 直接运行
 python app.py
+
+# 方式2: 使用脚本
+run.bat        # 启动服务
+package.bat    # 生成EXE文件
 ```
-或使用 package.bat 或 run.bat
 
-## 5. 访问
+### 启用DeepSeek AI
+1. 在[DeepSeek官网](https://deepseek.com/)获取API Key
+2. 修改`config.json`中的`DEEPSEEK_API_KEY`
+3. 删除或重命名`html/index.html`以启用AI页面
+4. 重启服务
 
-启动程序后，访问 http://127.0.0.1:5000/ 即可查看网页
+---
 
-# ‼️ 额外说明
+## 📝 注意事项
 
-- 程序会优先检查html文件夹中的index.html文件，如果存在则直接显示，否则会显示默认的网页(templates/index.html)
-- 修改html文件夹中的index.html文件后，需要重启程序才能生效
-- config.json 文件实际上是记录可以被下载的文件，如果你想要分享新文件，必须修改这个文件，然后重启程序
-- 我写死的只能下载files里的文件，不然就是非法的
-- 以及，本库中的所有网页都是deepseek写的
-- 留言墙默认只读取4条留言，如果想修改有点麻烦，还是在app.py里
-- 由于我比较懒，其实很多功能本来应该搞成可以用配置文件的，但是懒得写了
-- package.bat 可以快捷安装依赖并把程序打包成exe文件
-- run.bat 人如其名，就是直接运行
-- 这些规则纯粹是我不知道写在哪，所以就先这样了
+1. **页面优先级**  
+   程序优先加载`html/index.html`，若不存在则使用`templates/index.html`
+
+2. **文件安全**  
+   所有可下载文件必须存放在`files/`目录并在`config.json`中注册
+
+3. **配置生效**  
+   - 修改HTML文件或配置文件后需**重启服务**
+   - 部分功能（如留言显示数量）需直接修改`app.py`
+
+4. **开发说明**  
+   - 前端页面由DeepSeek辅助生成
+   - 部分配置项尚未模块化，后续计划优化
+
+访问 http://127.0.0.1:5000/ 开始使用 ▶
