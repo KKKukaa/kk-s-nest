@@ -1,6 +1,3 @@
-以下是整合后的README.md，结构更清晰且内容更简洁：
-
----
 # KUK的小窝 - 多功能Web门户
 
 ![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)  
@@ -20,24 +17,24 @@
 - 留言存档支持按时间、用户名分类检索
 
 ### **安全文件共享**
-- 动态加载下载列表（仅限`files/`目录）
+- 动态加载下载列表（仅限 *files/* 目录）
 - 防路径穿越攻击，实时校验文件合法性
 - 文件大小自动计算与展示  
-  *📌 新增文件需在`config.json`中注册并重启服务*
+  *📌 新增文件需在* config.json *中注册并重启服务*
 
 ### **DeepSeek AI集成**（默认关闭）
 - 通过官方API实现对话功能  
   *📌 需在[DeepSeek官网](https://deepseek.com/)注册并配置API Key*
 
 ### **留言墙**
-- 自动读取最新4条留言（数量需修改`app.py`调整）
+- 自动读取最新4条留言（数量需修改 app.py 调整）
 - 实时展示用户留言  
   *📌 修改HTML文件后需重启服务生效*
 
 ### **便捷部署**
-- 一键EXE打包（通过`package.bat`）
+- 一键EXE打包（通过 *package.bat* ）
 - 支持内网穿透快速部署
-- 提供`run.bat`直接启动服务
+- 提供 *run.bat* 直接启动服务
 
 ---
 
@@ -75,8 +72,8 @@ package.bat    # 生成EXE文件
 
 ### 启用DeepSeek AI
 1. 在[DeepSeek官网](https://deepseek.com/)获取API Key
-2. 修改`config.json`中的`DEEPSEEK_API_KEY`
-3. 删除或重命名`html/index.html`以启用AI页面
+2. 修改 *config.json* 中的 *DEEPSEEK_API_KEY*
+3. 删除或重命名 html/index.html 以启用AI页面
 4. 重启服务
 
 ---
@@ -84,14 +81,14 @@ package.bat    # 生成EXE文件
 ## 📝 注意事项
 
 1. **页面优先级**  
-   程序优先加载`html/index.html`，若不存在则使用`templates/index.html`
+   程序优先加载 *html/index.html* ，若不存在则使用 *templates/index.html* 
 
 2. **文件安全**  
-   所有可下载文件必须存放在`files/`目录并在`config.json`中注册
+   所有可下载文件必须存放在*files/*目录并在*config.json*中注册
 
 3. **配置生效**  
    - 修改HTML文件或配置文件后需**重启服务**
-   - 部分功能（如留言显示数量）需直接修改`app.py`
+   - 部分功能（如留言显示数量）需直接修改*app.py*
 
 4. **开发说明**  
    - 前端页面由DeepSeek辅助生成
